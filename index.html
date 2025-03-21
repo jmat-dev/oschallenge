@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Challenge</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #1e1e1e;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+        }
+        .certificate {
+            border: 1px solid #000000; /* Thin black border */
+            padding: 30px;
+            width: 90%;
+            max-width: 800px; /* Wider for a professional look */
+            margin: 20px auto;
+            text-align: center;
+            background: #ffffff; /* Plain white background */
+            color: #000000; /* All text in black */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+            border-radius: 5px; /* Slightly rounded corners */
+            font-family: 'Times New Roman', serif; /* Classic font */
+        }
+        .certificate .logo {
+            width: 70px; /* Reduced size to fit better */
+            border: none; /* Thin black border for logo */
+            
+            padding: 8px;
+            background: #fff;
+        }
+        .certificate h2 {
+            font-size: 36px;
+            color: #000000; /* Black heading */
+            margin: 10px 0;
+        }
+        .certificate p {
+            font-size: 18px;
+            margin: 8px 0;
+            color: #000000; /* Black text */
+        }
+        .certificate h3 {
+            font-size: 28px;
+            color: #000000; /* Black for name and date */
+            margin: 10px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .certificate span {
+            font-style: italic;
+            color: #000000; /* Black for roll number */
+        }
+        .question-container img {
+            width: 100%;
+            max-width: 500px;
+            margin: 10px auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px rgba(255, 255, 255, 0.1);
+        }
+        .styled-input {
+            display: block;
+            margin: 10px auto;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #555;
+            font-size: 16px;
+            text-align: center;
+            max-width: 400px;
+            background-color: #444;
+            color: white;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="start-screen">
+        <h2>20CST206 Operating Systems Challenge</h2>
+        <h2>Enter Your Details</h2>
+        <input type="text" id="userName" class="styled-input" placeholder="Enter your full name">
+        <input type="text" id="userRoll" class="styled-input" placeholder="Enter your roll number">
+        <button onclick="startChallenge()">Start Challenge</button>
+    </div>
+
+    <div class="container hidden" id="challenge-screen">
+        <h2>OS Challenge</h2>
+        <div id="question-container" class="question-container">
+            <img src="" id="question-image" alt="Question will appear here">
+            <input type="text" id="answer" class="styled-input" placeholder="Enter your answer">
+        </div>
+        <button onclick="checkAnswer()">Submit</button>
+    </div>
+
+   <div id="certificate" class="certificate hidden">
+        <img src="logo.png" class="logo" alt="Logo">
+        <h2>Certificate of Completion</h2>
+        <p>This is to certify that</p>
+        <h3 id="certName"></h3>
+        <p>Roll No: <span id="certRoll"></span></p>
+        <p>has successfully completed the OS Challenge on</p>
+        <h3 id="certDate"></h3>
+        <p><b>Course: 20CST206 Operating Systems</b></p>
+        <p><b>Course Coordinator: Justin Mathew</b></p>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const questions = ["q1.png", "q2.png", "q3.png", "q4.png", "q5.png"];
+        const answers = ["4", "24", "1", "30", "9"];
+        let userName = "", userRoll = "";
+
+        function startChallenge() {
+            userName = document.getElementById("userName").value;
+            userRoll = document.getElementById("userRoll").value;
+            if (userName.trim() === "" || userRoll.trim() === "") {
+                alert("Please enter your name and roll number.");
+                return;
+            }
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("challenge-screen").classList.remove("hidden");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById("question-image").src = questions[currentQuestion];
+                document.getElementById("answer").value = "";
+            } else {
+                showCertificate();
+            }
+        }
+
+        function checkAnswer() {
+            let userAnswer = document.getElementById("answer").value.trim();
+            if (userAnswer === answers[currentQuestion]) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                alert("Incorrect answer, try again.");
+            }
+        }
+
+        function showCertificate() {
+            document.getElementById("challenge-screen").classList.add("hidden");
+            document.getElementById("certificate").classList.remove("hidden");
+            document.getElementById("certName").textContent = userName;
+            document.getElementById("certRoll").textContent = userRoll;
+            document.getElementById("certDate").textContent = new Date().toDateString();
+            setTimeout(downloadCertificate, 1000);
+        }
+
+        function downloadCertificate() {
+            let element = document.getElementById("certificate");
+            let filename = `${userRoll}_${userName.replace(/\s+/g, '_')}.pdf`; // RollNumber_Name format
+            html2pdf().from(element).set({ filename: filename }).save();
+        }
+    </script>
+</body>
+</html>
