@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OS Challenge</title>
-    <style>
-        .hidden { display: none; }
-        .container { text-align: center; padding: 20px; }
-        .styled-input { padding: 10px; margin: 10px; width: 80%; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -30,7 +30,7 @@
         <button onclick="checkAnswer()">Submit</button>
     </div>
 
-    <div id="certificate" class="certificate hidden">
+   <div id="certificate" class="certificate hidden">
         <img src="logo.png" class="logo" alt="Logo">
         <h2>Certificate of Completion</h2>
         <p>This is to certify that</p>
@@ -45,16 +45,9 @@
     <script>
         let currentQuestion = 0;
         const questions = ["q1.png", "q2.png", "q3.png", "q4.png", "q5.png"];
-
-        // Correctly Base64 Encoded Answers
-        const encryptedAnswers = ["NA==", "MjQ=", "MQ==", "MzA=", "OQ=="]; // Encoded for ["4", "24", "1", "30", "9"]
-
+        const answers = ["4", "24", "1", "30", "9"];
         let userName = "", userRoll = "";
-
-        function decodeBase64(encoded) {
-            return atob(encoded).trim();  // Decode Base64 and remove any extra spaces
-        }
-
+     
         function startChallenge() {
             userName = document.getElementById("userName").value;
             userRoll = document.getElementById("userRoll").value;
@@ -78,30 +71,12 @@
 
         function checkAnswer() {
             let userAnswer = document.getElementById("answer").value.trim();
-            let correctAnswer = decodeBase64(encryptedAnswers[currentQuestion]);
-
-            console.log(`User Answer: ${userAnswer}, Correct Answer: ${correctAnswer}`); // Debugging
-
-            if (userAnswer === correctAnswer) {
+            if (userAnswer === answers[currentQuestion]) {
                 currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    loadQuestion();
-                } else {
-                    showCertificate();
-                }
+                loadQuestion();
             } else {
                 alert("Incorrect answer, try again.");
             }
         }
 
-        function showCertificate() {
-            document.getElementById("challenge-screen").classList.add("hidden");
-            document.getElementById("certificate").classList.remove("hidden");
-
-            document.getElementById("certName").innerText = userName;
-            document.getElementById("certRoll").innerText = userRoll;
-            document.getElementById("certDate").innerText = new Date().toDateString();
-        }
-    </script>
-</body>
 </html>
