@@ -135,9 +135,14 @@
     <script>
         let currentQuestion = 0;
         const questions = ["q1.png", "q2.png", "q3.png", "q4.png", "q5.png"];
-        const answers = ["4", "24", "1", "30", "9"];
-        let userName = "", userRoll = "";
+        const encryptedAnswers = ["MTI=", "MjQ=", "MQ==", "MzA=", "OQ=="]; // Base64 Encoded
 
+
+        let userName = "", userRoll = "";
+        function decodeBase64(encoded) {
+    return atob(encoded);
+}
+     
         function startChallenge() {
             userName = document.getElementById("userName").value;
             userRoll = document.getElementById("userRoll").value;
@@ -160,15 +165,16 @@
         }
 
         function checkAnswer() {
-            let userAnswer = document.getElementById("answer").value.trim();
-            if (userAnswer === answers[currentQuestion]) {
-                currentQuestion++;
-                loadQuestion();
-            } else {
-                alert("Incorrect answer, try again.");
-            }
-        }
+    let userAnswer = document.getElementById("answer").value.trim();
+    let correctAnswer = decodeBase64(encryptedAnswers[currentQuestion]);
 
+    if (userAnswer === correctAnswer) {
+        currentQuestion++;
+        loadQuestion();
+    } else {
+        alert("Incorrect answer, try again.");
+    }
+}
         function showCertificate() {
             document.getElementById("challenge-screen").classList.add("hidden");
             document.getElementById("certificate").classList.remove("hidden");
